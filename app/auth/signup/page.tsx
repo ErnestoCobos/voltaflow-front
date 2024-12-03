@@ -1,5 +1,5 @@
-import {RegistrationPage} from "@/components/Auth/registration-page";
+import RegistrationPage from "@/components/Auth/registration-page";
 
 export default function Page() {
-  return <RegistrationPage />
+    return <RegistrationPage/>;
 }
