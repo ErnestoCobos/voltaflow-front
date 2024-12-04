@@ -6,14 +6,14 @@ import LoadingOverlay from "./LoadingOverlay";
 import LoginForm from "./LoginForm";
 import {IllustrationSection} from "./IllustrationSection";
 import useMousePosition from "@/components/Auth/hooks/useMousePosition";
-import useLogin from '@/components/Auth/hooks/useLogin';
+import useAuth from '@/components/Auth/hooks/useAuth';
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 /**
- * Component representing the login page.
+ * Component representing the Login page.
  *
- * This component handles the login process, including form submission,
+ * This component handles the Login process, including form submission,
  * displaying loading states, and showing error messages.
  *
  * @returns {JSX.Element} The rendered LoginPage component.
@@ -30,10 +30,10 @@ export function LoginPage(): JSX.Element {
 
     const mousePosition = useMousePosition(containerRef);
 
-    const {login, isLoading, error} = useLogin();
+    const {login, isLoading, error} = useAuth();
 
     /**
-     * Handles the login form submission.
+     * Handles the Login form submission.
      *
      * @param e - The form submission event.
      */
@@ -46,7 +46,7 @@ export function LoginPage(): JSX.Element {
             setIsAnimating(true);
             console.log('Login successful:', response);
         } else {
-            setIsPerformingLogin(false); // Stop animation if login fails
+            setIsPerformingLogin(false); // Stop animation if Login fails
             toast.error(error || 'Login failed');
             console.error('Login failed:', error);
         }

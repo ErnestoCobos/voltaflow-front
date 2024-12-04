@@ -11,6 +11,8 @@ import {Checkbox} from "@/components/Auth/ui/checkbox";
 import {Button} from "@/components/Auth/ui/button";
 import LoadingAnimation from "@/components/LoadingAnimation";
 
+import base64Logo from "@/misc/base64Logo";
+
 interface LoginFormProps {
     showPassword: boolean;
     setShowPassword: (show: boolean) => void;
@@ -53,7 +55,7 @@ const LoginForm: FC<LoginFormProps> = ({
             <div className="text-center space-y-3">
                 <div className="relative h-14 w-48 mx-auto mb-8 transform hover:scale-105 transition-transform">
                     <Image
-                        src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Voltaflow%20Isologotipo-J5rlITjDdVDQXdUQ9OjqU2TCbWmYYR.png"
+                        src={base64Logo}
                         alt="Voltaflow Logo"
                         fill
                         priority
