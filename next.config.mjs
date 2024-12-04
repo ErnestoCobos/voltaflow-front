@@ -1,9 +1,43 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
-        unoptimized: true,
+    async rewrites() {
+        return [
+            {
+                source: '/:path*',
+                destination: '/app/:path*',
+                has: [
+                    {
+                        type: 'host',
+                        value: 'app.voltaflow.com',
+                    },
+                ],
+            },
+            {
+                source: '/:path*',
+                destination: '/www/:path*',
+                has: [
+                    {
+                        type: 'host',
+                        value: 'www.voltaflow.com',
+                    },
+                ],
+            },
+        ];
     },
-    output: 'export',
 };
+
+// Solo en desarrollo
+if (process.env.NODE_ENV === 'development') {
+    nextConfig.rewrites = async () => [
+        {
+            source: '/app/:path*',
+            destination: '/app/:path*',
+        },
+        {
+            source: '/www/:path*',
+            destination: '/www/:path*',
+        },
+    ];
+}
 
 export default nextConfig;
