@@ -1,5 +1,3 @@
-import { LoginPage } from "@/components/Auth/login"
-
 export default function Page() {
-  return <LoginPage />
+    <h1>Aplicación Lista</h1>
 }
