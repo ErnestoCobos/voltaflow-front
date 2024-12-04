@@ -284,7 +284,7 @@ const RegistrationPage: FC = () => {
 
                         <div className="text-center text-sm text-[#7F8C8D]">
                             Already have an account?{" "}
-                            <Link href="/auth/login" className="text-[#3498DB] hover:underline">
+                            <Link href="/app/auth/login" className="text-[#3498DB] hover:underline">
                                 Log In
                             </Link>
                         </div>

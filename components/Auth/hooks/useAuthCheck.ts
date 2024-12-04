@@ -22,12 +22,12 @@ export const useAuthCheck = () => {
                     setIsAuthenticated(true);
                 } else {
                     setIsAuthenticated(false);
-                    router.push('/login');
+                    router.push('/auth/login');
                 }
             } catch (error) {
                 console.error('Auth check failed:', error);
                 setIsAuthenticated(false);
-                router.push('/login');
+                router.push('/auth/login');
             }
         };
 

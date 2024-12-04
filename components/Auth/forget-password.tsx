@@ -172,7 +172,7 @@ export function ForgetPasswordPage() {
                         )}
 
                         <div className="text-center text-sm text-[#7F8C8D]">
-                            <Link href="/auth/login"
+                            <Link href="/app/auth/login"
                                   className="text-[#3498DB] hover:underline inline-flex items-center">
                                 <ArrowLeft className="mr-2 h-4 w-4"/>
                                 Back to Login
