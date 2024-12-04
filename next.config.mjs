@@ -1,9 +1,30 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
-        unoptimized: true,
-    },
     output: 'export',
+    async rewrites() {
+        return [
+            {
+                source: '/:path*',
+                destination: '/app/:path*',
+                has: [
+                    {
+                        type: 'host',
+                        value: 'app.voltaflow.com',
+                    },
+                ],
+            },
+            {
+                source: '/:path*',
+                destination: '/www/:path*',
+                has: [
+                    {
+                        type: 'host',
+                        value: 'www.voltaflow.com',
+                    },
+                ],
+            },
+        ];
+    },
 };
 
 export default nextConfig;
