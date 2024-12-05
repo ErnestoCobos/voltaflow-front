@@ -1,1 +1,1 @@
-export const API = process.env.API_ENDPOINT
+export const API = 'https://api.voltaflow.com';
