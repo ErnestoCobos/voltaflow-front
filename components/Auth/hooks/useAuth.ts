@@ -1,11 +1,3 @@
-/**
- * Custom hook to handle user Login process.
- *
- * This hook manages the authentication process by first obtaining a CSRF cookie
- * and then making a Login request with the provided email and password.
- *
- * @returns {Object} - An object containing the Login function, loading state, and error state.
- */
 import {useState} from 'react';
 import {API} from '@/misc/API';
 
@@ -39,38 +31,31 @@ interface RegistrationError {
     errors?: Record<string, string[]>;
 }
 
-/**
- * Custom hook to handle user Login process.
- *
- * @returns {Object} - An object containing the Login function, loading state, and error state.
- */
 const useAuth = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    /**
-     * Function to perform user Login.
-     *
-     * @param {string} email - The user's email address.
-     * @param {string} password - The user's password.
-     * @returns {Promise<LoginResponse | null>} - The Login response or null if an error occurred.
-     */
+    const getCsrfToken = async () => {
+        const response = await fetch(API + '/sanctum/csrf-cookie', {
+            method: 'GET',
+            credentials: 'include',
+        });
+        const csrfToken = response.headers.get('X-CSRF-TOKEN');
+        return csrfToken;
+    };
+
     const login = async (email: string, password: string): Promise<LoginResponse | null> => {
         setIsLoading(false);
         setError(null);
 
         try {
-            // Obtain the CSRF cookie
-            await fetch(API + '/sanctum/csrf-cookie', {
-                method: 'GET',
-                credentials: 'include',
-            });
+            const csrfToken = await getCsrfToken();
 
-            // Perform the Login request
             const response = await fetch(API + '/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken || '',
                 },
                 credentials: 'include',
                 body: JSON.stringify({email, password}),
@@ -93,30 +78,18 @@ const useAuth = () => {
         }
     };
 
-    /**
-     * Function to perform user registration.
-     *
-     * @param {string} name - The user's full name.
-     * @param {string} email - The user's email address.
-     * @param {string} password - The user's password.
-     * @param {string} password_confirmation - The confirmation of the user's password.
-     * @returns {Promise<RegistrationResponse | null>} - The registration response or null if an error occurred.
-     */
     const register = async (name: string, email: string, password: string, password_confirmation: string): Promise<RegistrationResponse | null> => {
         setIsLoading(true);
         setError(null);
 
         try {
-            // Obtain the CSRF cookie first
-            await fetch(API + '/sanctum/csrf-cookie', {
-                method: 'GET',
-                credentials: 'include',
-            });
+            const csrfToken = await getCsrfToken();
 
             const response = await fetch(API + '/api/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken || '',
                 },
                 credentials: 'include',
                 body: JSON.stringify({
