@@ -7,6 +7,7 @@
  * @returns {Object} - An object containing the Login function, loading state, and error state.
  */
 import {useState} from 'react';
+import {API} from '@/misc/API';
 
 interface LoginResponse {
     message: string;
@@ -60,13 +61,13 @@ const useAuth = () => {
 
         try {
             // Obtain the CSRF cookie
-            await fetch('https://api.voltaflow.com/sanctum/csrf-cookie', {
+            await fetch(API + '/sanctum/csrf-cookie', {
                 method: 'GET',
                 credentials: 'include',
             });
 
             // Perform the Login request
-            const response = await fetch('https://api.voltaflow.com/api/login', {
+            const response = await fetch(API + '/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -107,12 +108,12 @@ const useAuth = () => {
 
         try {
             // Obtain the CSRF cookie first
-            await fetch('https://api.voltaflow.com/sanctum/csrf-cookie', {
+            await fetch(API + '/sanctum/csrf-cookie', {
                 method: 'GET',
                 credentials: 'include',
             });
 
-            const response = await fetch('https://api.voltaflow.com/api/register', {
+            const response = await fetch(API + '/api/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

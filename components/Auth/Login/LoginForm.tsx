@@ -12,6 +12,7 @@ import {Button} from "@/components/Auth/ui/button";
 import LoadingAnimation from "@/components/LoadingAnimation";
 
 import base64Logo from "@/misc/base64Logo";
+import ROUTES from "@/misc/ROUTES";
 
 interface LoginFormProps {
     showPassword: boolean;
@@ -125,7 +126,7 @@ const LoginForm: FC<LoginFormProps> = ({
                         </label>
                     </div>
                     <Link
-                        href="/app/auth/forgot-password"
+                        href={ROUTES.FORGOT_PASSWORD}
                         className="text-sm text-blue-500 hover:text-blue-600 hover:underline transition-colors"
                     >
                         Forgot password?
@@ -152,7 +153,7 @@ const LoginForm: FC<LoginFormProps> = ({
             <div className="text-center text-sm text-gray-500">
                 Don&apos;t have an account?{" "}
                 <Link
-                    href="/app/auth/signup"
+                    href={ROUTES.SIGNUP}
                     className="text-blue-500 hover:text-blue-600 hover:underline transition-colors"
                 >
                     Sign Up
