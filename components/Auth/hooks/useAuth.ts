@@ -21,6 +21,23 @@ interface LoginError {
     message: string;
 }
 
+interface RegistrationResponse {
+    message: string;
+    user: {
+        id: number;
+        name: string;
+        email: string;
+        tenant_id: number;
+        created_at: string;
+        updated_at: string;
+    };
+}
+
+interface RegistrationError {
+    message: string;
+    errors?: Record<string, string[]>;
+}
+
 /**
  * Custom hook to handle user Login process.
  *
@@ -78,10 +95,6 @@ const useAuth = () => {
     /**
      * Function to perform user registration.
      *
-     * This function sends a registration request to the server with the provided
-     * user details (name, email, password, and password confirmation). It handles
-     * the loading state and error state during the registration process.
-     *
      * @param {string} name - The user's full name.
      * @param {string} email - The user's email address.
      * @param {string} password - The user's password.
@@ -120,7 +133,10 @@ const useAuth = () => {
                 return data as RegistrationResponse;
             } else {
                 const errorData = data as RegistrationError;
-                setError(errorData.errors || errorData.message || 'Registration failed');
+                const errorMessage = errorData.errors
+                    ? Object.values(errorData.errors).flat().join(', ')
+                    : errorData.message || 'Registration failed';
+                setError(errorMessage);
                 console.error('Registration failed:', errorData);
                 setIsLoading(false);
                 return null;

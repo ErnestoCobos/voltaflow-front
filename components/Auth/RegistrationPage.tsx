@@ -25,12 +25,12 @@ const RegistrationPage: FC = () => {
     const [mousePosition, setMousePosition] = useState({x: 0.5, y: 0.5})
     const [, setFocusedInput] = useState<string | null>(null)
     const [eyesLookingUp, setEyesLookingUp] = useState(false)
-    const [isSuccess, setIsSuccess] = useState(false)
+    const [isSuccess,] = useState(false)
     const [errors, setErrors] = useState<{ [key: string]: string }>({})
     const [password, setPassword] = useState("")
     const [passwordConfirmation, setPasswordConfirmation] = useState("")
     const containerRef = useRef<HTMLDivElement>(null)
-    const {register, isLoading} = useAuth()
+    const {register, isLoading, error} = useAuth()
 
     // Validate passwords match
     useEffect(() => {
@@ -95,26 +95,33 @@ const RegistrationPage: FC = () => {
         const name = formData.get('name') as string
         const email = formData.get('email') as string
 
-        const result = await register(name, email, password, passwordConfirmation)
+        if (Object.keys(errors).length === 0) {
+            const result = await register(name, email, password, passwordConfirmation);
 
-        if (result) {
-            setIsSuccess(true)
-            setErrors({}) // Clear any existing errors
-        } else {
-            // Only set errors if there are specific error messages from the API
-            const newErrors: { [key: string]: string } = {}
-            if (error) {
-                if (typeof error === 'string') {
-                    newErrors.general = error
-                } else if (typeof error === 'object') {
-                    Object.keys(error).forEach(key => {
-                        newErrors[key] = error[key][0] // Assuming the first error message
-                    })
+            if (!result) {
+                const newErrors: { [key: string]: string } = {};
+                if (error) {
+                    if (typeof error === 'string') {
+                        newErrors.general = error;
+                    } else if (typeof error === 'object') {
+                        Object.entries(error).forEach(([key, value]) => {
+                            if (typeof value === 'string') {
+                                newErrors[key] = value;
+                            } else if (Array.isArray(value)) {
+                                newErrors[key] = value.join(', ');
+                            }
+                        });
+                    }
                 }
+                setErrors(newErrors);
+            } else {
+                // Registro exitoso, manejar en consecuencia
+                // Por ejemplo, redirigir a la página de inicio de sesión o al panel de control
             }
-            setErrors(newErrors)
+        } else {
+            setErrors(errors);
         }
-    }
+    };
 
     // Check if form is valid
     const isFormValid = !errors.password_confirmation && password === passwordConfirmation && password !== ""
@@ -271,7 +278,7 @@ const RegistrationPage: FC = () => {
                             <div className="text-center space-y-4">
                                 <h2 className="text-xl font-bold text-green-600">Registration Successful!</h2>
                                 <p className="text-sm text-[#7F8C8D]">
-                                    Please check your email to confirm your registration. Don't forget to check your
+                                    Please check your email to confirm your registration. Don&apost forget to check your
                                     spam folder.
                                 </p>
                             </div>
