@@ -7,7 +7,8 @@
  * @returns {Object} - An object containing the Login function, loading state, and error state.
  */
 import {useState} from 'react';
-import {API} from '@/misc/API';
+import api from '@/misc/axiosInstance';
+import { AxiosError } from 'axios';
 
 interface LoginResponse {
     message: string;
@@ -60,35 +61,25 @@ const useAuth = () => {
         setError(null);
 
         try {
-            // Obtain the CSRF cookie
-            await fetch(API + '/sanctum/csrf-cookie', {
-                method: 'GET',
-                credentials: 'include',
-            });
+            // Obtener la cookie CSRF primero
+            await api.get('/sanctum/csrf-cookie');
 
-            // Perform the Login request
-            const response = await fetch(API + '/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-                body: JSON.stringify({email, password}),
-            });
-
-            if (response.ok) {
-                const data: LoginResponse = await response.json();
-                setIsLoading(false);
-                return data;
-            } else {
-                const errorData: LoginError = await response.json();
-                setError(errorData.message);
-                setIsLoading(false);
-                return null;
-            }
-        } catch {
-            setError('An unexpected error occurred');
+            // Realizar la solicitud de login
+            const response = await api.post<LoginResponse>('/api/login', { email, password });
+            
             setIsLoading(false);
+            return response.data;
+        } catch (err: unknown) {
+            setIsLoading(false);
+    
+            if (err instanceof AxiosError && err.response?.data) {
+                // Casteamos la data a LoginError si aún la usas
+                const errorData = err.response.data as LoginError;
+                setError(errorData.message);
+            } else {
+                setError('An unexpected error occurred');
+            }
+    
             return null;
         }
     };
@@ -107,45 +98,32 @@ const useAuth = () => {
         setError(null);
 
         try {
-            // Obtain the CSRF cookie first
-            await fetch(API + '/sanctum/csrf-cookie', {
-                method: 'GET',
-                credentials: 'include',
+            // Obtener la cookie CSRF antes de registrar
+            await api.get('/sanctum/csrf-cookie');
+
+            const response = await api.post<RegistrationResponse>('/api/register', {
+                name,
+                email,
+                password,
+                password_confirmation,
             });
 
-            const response = await fetch(API + '/api/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-                body: JSON.stringify({
-                    name,
-                    email,
-                    password,
-                    password_confirmation,
-                }),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                setIsLoading(false);
-                return data as RegistrationResponse;
-            } else {
-                const errorData = data as RegistrationError;
+            setIsLoading(false);
+            return response.data;
+        } catch (err: unknown) {
+            setIsLoading(false);
+            if (err instanceof AxiosError && err.response?.data) {
+                const errorData = err.response.data as RegistrationError;
                 const errorMessage = errorData.errors
                     ? Object.values(errorData.errors).flat().join(', ')
                     : errorData.message || 'Registration failed';
                 setError(errorMessage);
                 console.error('Registration failed:', errorData);
-                setIsLoading(false);
-                return null;
+            } else {
+                setError('An unexpected error occurred');
+                console.error('Error during registration:', err);
             }
-        } catch (error) {
-            setError('An unexpected error occurred');
-            console.error('Error during registration:', error);
-            setIsLoading(false);
+    
             return null;
         }
     };
