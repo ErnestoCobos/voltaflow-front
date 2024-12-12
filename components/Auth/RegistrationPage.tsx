@@ -25,7 +25,7 @@ const RegistrationPage: FC = () => {
     const [mousePosition, setMousePosition] = useState({x: 0.5, y: 0.5})
     const [, setFocusedInput] = useState<string | null>(null)
     const [eyesLookingUp, setEyesLookingUp] = useState(false)
-    const [isSuccess,] = useState(false)
+    const [isSuccess, setIsSuccess] = useState(false)
     const [errors, setErrors] = useState<{ [key: string]: string }>({})
     const [password, setPassword] = useState("")
     const [passwordConfirmation, setPasswordConfirmation] = useState("")
@@ -115,8 +115,7 @@ const RegistrationPage: FC = () => {
                 }
                 setErrors(newErrors);
             } else {
-                // Registro exitoso, manejar en consecuencia
-                // Por ejemplo, redirigir a la página de inicio de sesión o al panel de control
+                setIsSuccess(true);
             }
         } else {
             setErrors(errors);
